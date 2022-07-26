@@ -19,7 +19,7 @@ class CreateProdutosTable extends Migration
             $table->unsignedBigInteger('categoria_produto')->nullable();
             $table->unsignedBigInteger('tipo_produto')->nullable();
 
-            $table->string('nome_produto');
+            $table->string('nome_produto')->unique();
             $table->text('descricao_produto')->nullable();
             $table->string('imagem_produto')->nullable();
             $table->integer('quantidade');
