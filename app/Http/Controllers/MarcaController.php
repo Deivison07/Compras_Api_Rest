@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class MarcaController extends Controller
 {
+
+
+    public function __construct(Marca $marca)
+    {
+        $this->marca = $marca;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +21,7 @@ class MarcaController extends Controller
      */
     public function index()
     {
-        //
+        return response($this->marca->all(),200);
     }
 
 
@@ -24,9 +31,13 @@ class MarcaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request){
+        $request->validate($this->marca->roules(),$this->marca->feedback());
+  
+        $obj = $this->marca->create($request->all());
+
+        return response($obj,201);
+        
     }
 
     /**
@@ -35,9 +46,16 @@ class MarcaController extends Controller
      * @param  \App\Models\Marca  $marca
      * @return \Illuminate\Http\Response
      */
-    public function show(Marca $marca)
+    public function show($id)
     {
-        //
+        
+        $obj = $this->marca->find($id);
+
+        if($obj == null){
+            return response(['erro'=> 'item não existe'],404);
+        }
+
+        return response($obj,200);
     }
 
 
