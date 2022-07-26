@@ -1,0 +1,43 @@
+Tabela - coluna - tipo
+
+Marca:
+	id -> id
+	nome_marca -> str
+	imagem_marca -> str
+
+tipo:
+	id -> id
+	nome_tipo -> str
+
+categoria:
+	id -> id
+	nome_categoria -> str
+
+produto:
+	id -> id
+	nome_produto -> str
+	descricao_produto -> text (nullable)
+	imagem_produto -> str
+	categoria_produto -> categoria FK (nullable)
+	tipo_produto -> tipo FK (nullable)
+	marca_produto -> marca FK
+	quantidade_produto -> int
+	valor_produto -> float
+	
+cliente:
+	id -> id
+	nome_cliente -> str
+	cpf_cliente -> int
+
+compra:
+	id -> id
+	produto_id -> produto FK
+	cliente_id -> cliente FK
+	data -> data
+   
+		
+
+
+
+	
+		
