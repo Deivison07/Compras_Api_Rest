@@ -15,11 +15,11 @@ categoria:
 
 produto:
 	id -> id
-	nome_produto -> str
 	descricao_produto -> text (nullable)
-	imagem_produto -> str
 	categoria_produto -> categoria FK (nullable)
 	tipo_produto -> tipo FK (nullable)
+	nome_produto -> str
+	imagem_produto -> str
 	marca_produto -> marca FK
 	quantidade_produto -> int
 	valor_produto -> float

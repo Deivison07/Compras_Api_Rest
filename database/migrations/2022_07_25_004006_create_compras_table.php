@@ -15,7 +15,15 @@ class CreateComprasTable extends Migration
     {
         Schema::create('compras', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('produto_id');
+            $table->unsignedBigInteger('cliente_id');
+
             $table->timestamps();
+
+            $table->foreign('produto_id')->references('id')->on('produtos');
+            $table->foreign('cliente_id')->references('id')->on('clientes');
+
+            
         });
     }
 
@@ -26,6 +34,14 @@ class CreateComprasTable extends Migration
      */
     public function down()
     {
+
+        Schema::table('compras', function(Blueprint $table) {
+
+            $table->dropForeign('compras_produto_id_foreign'); //[table]_[coluna]_foreign
+            $table->dropForeign('compras_cliente_id_foreign');
+
+        });
+
         Schema::dropIfExists('compras');
     }
 }
