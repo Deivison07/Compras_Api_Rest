@@ -30,14 +30,11 @@ class TipoController extends Controller
         return response($obj,201);
     }
 
-
-
-
     public function show($id){
-    
+
         $obj = $this->tipo->find($id);
         if($obj===null){
-            return response(['erro' => 'item não existe'],404);
+            return response(['error' => 'item não existe'],404);
         }
         return response($obj,200);
     }
@@ -46,19 +43,19 @@ class TipoController extends Controller
     {
         $obj = $this->tipo->find($id);
         if($obj===null){
-            return response(['erro' => 'item não existe'],404);
+            return response(['error' => 'item não existe'],404);
         }
 
-        if ($request->method() === 'PATCH'){ 
+        if ($request->method() === 'PATCH'){
             $regrasDinamicas = array();
 
             foreach($obj->roules() as $input => $regras){
 
                 if(array_key_exists($input,$request->all())){
                     $regrasDinamicas[$input] = $regras;
-                }   
+                }
             }
-            $request->validate( $regrasDinamicas, $obj->feedback()); 
+            $request->validate( $regrasDinamicas, $obj->feedback());
         }
 
         $request->validate($obj->roules(), $obj->feedback());
@@ -89,4 +86,5 @@ class TipoController extends Controller
         $obj->delete();
         return response(['msg'=>'objeto excluido com sucesso'],200);
     }
+
 }

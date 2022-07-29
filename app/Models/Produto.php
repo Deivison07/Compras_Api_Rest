@@ -43,5 +43,18 @@ class Produto extends Model
     }
 
 
+    // relacionamento de pertencimento
+
+    public function categoria(){
+         return $this->belongsTo('App\Models\Categoria');
+    }
+
+    public function marca(){
+        return $this->belongsTo('App\Models\Marca');
+    }
+
+    public function tipo(){
+        return $this->belongsTo('App\Models\Tipo');
+    }
 
 }

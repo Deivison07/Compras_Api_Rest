@@ -7,14 +7,22 @@ use Illuminate\Http\Request;
 
 class CompraController extends Controller
 {
+
+    public function __construct(Compra $compra){
+
+        $this->compra = $compra;
+
+    }
+
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index(){
+
+        return response($this->compra->all());
     }
 
 
@@ -26,18 +34,25 @@ class CompraController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate($this->compra->roules(),$this->compra->feedback());
+        $obj = $this->compra->create($request->all());
+        return response($obj,201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Compra  $compra
+     * @param  integer $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Compra $compra)
+    public function show($id)
     {
-        //
+        $obj = $this->compra->find($id);
+
+        if($obj == null){
+            return response(['erro'=> 'item não existe'],404);
+        }
+        return response($obj,200);
     }
 
 
@@ -46,22 +61,51 @@ class CompraController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Compra  $compra
+     * @param  integer $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Compra $compra)
+    public function update(Request $request, $id)
     {
-        //
+        $obj = $this->compra->find($id);
+        if($obj===null){
+            return response(['error' => 'item não existe'],404);
+        }
+
+        if ($request->method() === 'PATCH'){
+            $regrasDinamicas = array();
+
+            foreach($obj->roules() as $input => $regras){
+
+                if(array_key_exists($input,$request->all())){
+                    $regrasDinamicas[$input] = $regras;
+                }
+            }
+            $request->validate( $regrasDinamicas, $obj->feedback());
+        }
+
+        $request->validate($obj->roules(), $obj->feedback());
+
+        $obj->fill($request->all());
+        $obj->save();
+
+        return response($obj,200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Compra  $compra
+     * @param  integer $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Compra $compra)
+    public function destroy($id)
     {
-        //
+        $obj = $this->compra->find($id);
+
+        if($obj == null){
+            return response(['erro'=> 'item não existe'],404);
+        }
+
+        $obj->delete();
+        return response(['msg'=>'item excluido com sucesso']);
     }
 }

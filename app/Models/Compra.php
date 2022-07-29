@@ -27,4 +27,13 @@ class Compra extends Model
         ];
     }
 
+
+    public function cliente(){
+        return $this->belongsTo('App\Models\Cliente');
+    }
+
+    public function produto(){
+        return $this->belongsTo('App\Models\Produto');
+    }
+
 }

@@ -25,6 +25,3 @@ Route::apiResource('tipo','App\Http\Controllers\TipoController');
 Route::apiResource('produto','App\Http\Controllers\ProdutoController');
 Route::apiResource('compra','App\Http\Controllers\CompraController');
 
-
-
-

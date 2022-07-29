@@ -7,14 +7,20 @@ use Illuminate\Http\Request;
 
 class CategoriaController extends Controller
 {
+
+    public function __construct( Categoria $categoria ){
+        $this->categoria = $categoria;
+    }
+
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index(){
+        return response($this->categoria->all(),200);
+
     }
 
 
@@ -26,18 +32,26 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate($this->categoria->roules(),$this->categoria->feedback());
+        $obj = $this->categoria->create($request->all());
+        return response($obj,201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Categoria  $categoria
+     * @param  integer %id
      * @return \Illuminate\Http\Response
      */
-    public function show(Categoria $categoria)
-    {
-        //
+    public function show($id){
+
+        $obj = $this->categoria->find($id);
+
+        if($obj === null){
+            return response(['error'=>'objeto não cadastrado']);
+        }
+        return response($obj,200);
+
     }
 
 
@@ -45,22 +59,52 @@ class CategoriaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Categoria  $categoria
+     * @param  integer $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Categoria $categoria)
-    {
-        //
+    public function update(Request $request, $id){
+
+        $obj = $this->tipo->find($id);
+        if($obj===null){
+            return response(['error' => 'item não existe'],404);
+        }
+
+        if ($request->method() === 'PATCH'){
+            $regrasDinamicas = array();
+
+            foreach($obj->roules() as $input => $regras){
+
+                if(array_key_exists($input,$request->all())){
+                    $regrasDinamicas[$input] = $regras;
+                }
+            }
+            $request->validate( $regrasDinamicas, $obj->feedback());
+        }
+
+        $request->validate($obj->roules(), $obj->feedback());
+
+        $obj->fill($request->all());
+        $obj->save();
+
+        return response($obj,200);
+
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Categoria  $categoria
+     * @param  integer %id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Categoria $categoria)
-    {
-        //
+    public function destroy($id){
+
+        $obj = $this->tipo->find($id);
+        if($obj===null){
+            return response(['error' => 'item não existe'],404);
+        }
+
+        $obj->delete();
+        return response(['msg'=>'objeto excluido com sucesso'],200);
+
     }
 }
