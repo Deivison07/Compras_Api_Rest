@@ -8,61 +8,34 @@ use Illuminate\Http\Request;
 class ClienteController extends Controller
 {
 
-    public function __construct( Cliente $cliente ){
+    public function __construct( Cliente $cliente){
         $this->cliente = $cliente;
     }
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return  response($this->cliente->all(),200);
+    public function index(){
+        return response($this->cliente->with('compra')->get(),200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
+    public function store(Request $request){
+
         $request->validate($this->cliente->roules(),$this->cliente->feedback());
 
         $obj = $this->cliente->create($request->all());
-
         return response($obj,201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  integer $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id){
 
-        $obj = $this->cliente->find($id);
+        $obj = $this->cliente->with('compra')->find($id);
         if($obj === null){
             return response(['error'=>'item não existe'],404);
         }
         return response($obj,200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  integer $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $obj = $this->tipo->find($id);
+    public function update(Request $request, $id){
+
+        $obj = $this->cliente->find($id);  
         if($obj===null){
             return response(['error' => 'item não existe'],404);
         }
@@ -88,16 +61,10 @@ class ClienteController extends Controller
         return response($obj,200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Cliente  $cliente
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Cliente $cliente){
+    public function destroy($id){
 
 
-        $obj = $this->tipo->find($id);
+        $obj = $this->cliente->find($id);
         if($obj===null){
             return response(['error' => 'item não existe'],404);
         }

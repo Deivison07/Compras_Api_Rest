@@ -26,4 +26,8 @@ class Categoria extends Model
         ];
     }
 
+    public function produto(){
+        return $this->hasMany('App\Models\Produto');
+    }
+
 }

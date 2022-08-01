@@ -19,7 +19,7 @@ class ProdutoController extends Controller
      */
     public function index()
     {
-        return response($this->produto->all(),200);
+        return response($this->produto->with('marca','categoria')->get(),200);
     }
 
 
@@ -30,8 +30,16 @@ class ProdutoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
+
         $request->validate($this->produto->roules(),$this->produto->feedback());
+
+        $imagem = $request->imagem_produto;
+        $imagem_urn = $imagem->store('imagens','public');
+
         $obj = $this->produto->create($request->all());
+        $obj->fill(['imagem_produto'=>$imagem_urn]);
+        $obj->save();
+    
         return response($obj,201);
 
     }
@@ -44,13 +52,12 @@ class ProdutoController extends Controller
      */
     public function show($id)
     {
-
-        $obj = $this->produto->find($id);
-
+        $obj = $this->produto->with('marca','categoria')->find($id);
+        
         if($obj === null){
             return response(['error'=>'objeto não cadastrado']);
         }
-        return response($obj,200);
+        return response()->json($obj, 200);    
     }
 
     /**
@@ -78,11 +85,23 @@ class ProdutoController extends Controller
             }
             $request->validate( $regrasDinamicas, $obj->feedback());
         }
-
-        $request->validate($obj->roules(), $obj->feedback());
+        else{
+            $request->validate($obj->roules(), $obj->feedback());
+        }
 
         $obj->fill($request->all());
         $obj->save();
+
+        if(array_key_exists('imagem_produto',$request->all())){
+
+            Storage::disk('public')->delete($obj->imagem_produto);
+            $imagem = $request->imagem_produto;
+            $imagem_urn = $imagem->store('imagens','public');
+
+            $obj->imagem_produto = $imagem_urn;
+            $obj->save();
+        }
+        
 
         return response($obj,200);
 

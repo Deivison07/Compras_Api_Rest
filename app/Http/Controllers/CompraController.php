@@ -22,7 +22,7 @@ class CompraController extends Controller
      */
     public function index(){
 
-        return response($this->compra->all());
+        return response($this->compra->with('cliente','produto')->get());
     }
 
 
@@ -47,7 +47,7 @@ class CompraController extends Controller
      */
     public function show($id)
     {
-        $obj = $this->compra->find($id);
+        $obj = $this->compra->with('cliente','produto')->find($id);
 
         if($obj == null){
             return response(['erro'=> 'item não existe'],404);

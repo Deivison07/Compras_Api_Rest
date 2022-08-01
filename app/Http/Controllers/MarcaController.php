@@ -22,9 +22,8 @@ class MarcaController extends Controller
      */
     public function index()
     {
-        return response($this->marca->all(),200);
+        return response($this->marca->with('produtos')->get(),200);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -35,21 +34,14 @@ class MarcaController extends Controller
     public function store(Request $request){
 
         $request->validate($this->marca->roules(),$this->marca->feedback());
-
-
-        $obj = $this->marca->create($request->all());
-
-        $imagem = $request->imagem_marca;
+        
+        $imagem = $request->logo_marca;
         $imagem_urn = $imagem->store('imagens','public');
 
-        $obj->fill([
-            'imagem_marca' => $imagem_urn
-        ]);
-
+        $obj = $this->marca->create($request->all());
+        $obj->fill(['logo_marca'=>$imagem_urn]);
         $obj->save();
-
         return response($obj,201);
-
     }
 
     /**
@@ -61,7 +53,7 @@ class MarcaController extends Controller
     public function show($id)
     {
 
-        $obj = $this->marca->find($id);
+        $obj = $this->marca->with('produtos')->find($id);
 
         if($obj == null){
             return response(['erro'=> 'item não existe'],404);
@@ -81,7 +73,7 @@ class MarcaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $obj = $this->tipo->find($id);
+        $obj = $this->marca->find($id);
         if($obj===null){
             return response(['error' => 'item não existe'],404);
         }
@@ -106,11 +98,11 @@ class MarcaController extends Controller
 
         if(array_key_exists('imagem_marca',$request->all())){
 
-            Storage::disk('public')->delete($obj->imagem_marca);
-            $imagem = $request->imagem_marca;
+            Storage::disk('public')->delete($obj->logo_marca);
+            $imagem = $request->logo_marca;
             $imagem_urn = $imagem->store('imagens','public');
 
-            $obj->imagem_marca = $imagem_urn;
+            $obj->logo_marca = $imagem_urn;
             $obj->save();
         }
         return $obj;
@@ -125,12 +117,12 @@ class MarcaController extends Controller
      */
     public function destroy($id)
     {
-        $obj = $this->tipo->find($id);
+        $obj = $this->marca->find($id);
         if($obj === null){
             return response(['error'=>'item não existe'],404);
         }
 
-        Storage::disk('public')->delete($obj->imagem_marca);
+        Storage::disk('public')->delete($obj->logo_marca);
         $obj->delete();
         return response(['msg'=> 'excluido com sucesso']);
 

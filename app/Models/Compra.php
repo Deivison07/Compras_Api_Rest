@@ -9,7 +9,7 @@ class Compra extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['produto_id,cliente_id'];
+    protected $fillable = ['produto_id','cliente_id'];
 
     public function roules(){
 

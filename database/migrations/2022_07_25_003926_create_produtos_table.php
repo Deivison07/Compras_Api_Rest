@@ -15,22 +15,22 @@ class CreateProdutosTable extends Migration
     {
         Schema::create('produtos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('marca_produto');
-            $table->unsignedBigInteger('categoria_produto')->nullable();
-            $table->unsignedBigInteger('tipo_produto')->nullable();
+            $table->unsignedBigInteger('marca_id');
+            $table->unsignedBigInteger('categoria_id');
+            $table->unsignedBigInteger('tipo_id');
 
             $table->string('nome_produto')->unique();
             $table->text('descricao_produto')->nullable();
-            $table->string('imagem_produto')->nullable();
-            $table->integer('quantidade');
-            $table->float('valor');
+            $table->string('imagem_produto');
+            $table->integer('quantidade_produto');
+            $table->float('valor_produto');
 
             $table->timestamps();
 
             //foreign key (constraints)
-            $table->foreign('marca_produto')->references('id')->on('marcas');
-            $table->foreign('categoria_produto')->references('id')->on('categorias');
-            $table->foreign('tipo_produto')->references('id')->on('tipos');
+            $table->foreign('marca_id')->references('id')->on('marcas');
+            $table->foreign('categoria_id')->references('id')->on('categorias');
+            $table->foreign('tipo_id')->references('id')->on('tipos');
         });
     }
 
@@ -43,9 +43,9 @@ class CreateProdutosTable extends Migration
     {
         Schema::table('produtos', function(Blueprint $table) {
 
-            $table->dropForeign('produtos_categoria_produto_foreign'); //[table]_[coluna]_foreign
-            $table->dropForeign('produtos_marca_produto_foreign');
-            $table->dropForeign('produtos_tipo_produto_foreign');
+            $table->dropForeign('produtos_categoria_id_foreign'); //[table]_[coluna]_foreign
+            $table->dropForeign('produtos_marca_id_foreign');
+            $table->dropForeign('produtos_tipo_id_foreign');
         });
 
         Schema::dropIfExists('produtos');

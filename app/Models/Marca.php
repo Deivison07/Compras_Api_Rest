@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Marca extends Model
 {
     use HasFactory;
-
-    protected $fillable = ['nome_marca, imagem_marca'];
+    protected $fillable = ['nome_marca', 'logo_marca', 'descricao_marca'];
 
     public function roules(){
         return [
-            'nome_marca' => 'required|unique:marcas,nome_marca,'.$this->id.'min:3',
-            'imagem_marca' => 'file|mimes:png,jpeg,jpg'
+            'nome_marca' => 'required|unique:marcas,nome_marca,'.$this->id.'|min:3',
+            'logo_marca' => 'required|file|mimes:png,jpeg,jpg',
+            'descricao_marca' => 'required'
         ];
     }
 
@@ -27,4 +27,11 @@ class Marca extends Model
             'max' => ' O campo :attribute tem que ter no maximo 100 letras'
         ];
     }
+
+    public function produtos(){
+
+        return $this->hasMany('App\Models\Produto');
+
+    }
+
 }
